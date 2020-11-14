@@ -36,4 +36,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+
+    implementation "com.github.moxy-community:moxy-androidx:2.1.2"
+    annotationProcessor "com.github.moxy-community:moxy-compiler:2.1.2"
+
+    implementation 'ru.terrakok.cicerone:cicerone:5.1.1'
 }

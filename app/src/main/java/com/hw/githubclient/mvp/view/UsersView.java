@@ -4,5 +4,7 @@ import moxy.MvpView;
 import moxy.viewstate.strategy.alias.AddToEndSingle;
 
 @AddToEndSingle
-public interface MainView extends MvpView {
+public interface UsersView extends MvpView {
+    void init();
+    void updateList();
 }

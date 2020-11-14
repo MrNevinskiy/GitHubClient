@@ -1,66 +1,57 @@
 package com.hw.githubclient;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
-import com.hw.githubclient.mvp.presenter.Presenter;
+import androidx.fragment.app.Fragment;
+
+import com.hw.githubclient.mvp.presenter.MainPresenter;
 import com.hw.githubclient.mvp.view.MainView;
+import com.hw.githubclient.ui.BackButtonListener;
 
-public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener {
+import moxy.MvpAppCompatActivity;
+import moxy.presenter.InjectPresenter;
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.android.support.SupportAppNavigator;
 
-    private Presenter presenter;
+public class MainActivity extends MvpAppCompatActivity implements MainView {
 
-    public Button buttonCounterOne;
-    public Button buttonCounterTwo;
-    public Button buttonCounterThree;
+    @InjectPresenter
+    MainPresenter presenter;
+
+    private NavigatorHolder navigatorHolder = GithubApplication.getApplication().getNavigatorHolder();
+    private Navigator navigator = new SupportAppNavigator(this, getSupportFragmentManager(), R.id.container);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
-        presenter = new Presenter(this);
 
-        buttonCounterOne = findViewById(R.id.btn_counter1);
-        buttonCounterTwo = findViewById(R.id.btn_counter2);
-        buttonCounterThree = findViewById(R.id.btn_counter3);
-
-        buttonCounterOne.setOnClickListener(this);
-        buttonCounterTwo.setOnClickListener(this);
-        buttonCounterThree.setOnClickListener(this);
-
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        navigatorHolder.setNavigator(navigator);
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_counter1:
-                presenter.setButtonOneText();
-                break;
-            case R.id.btn_counter2:
-                presenter.setButtonTwoText();
-                break;
-            case R.id.btn_counter3:
-                presenter.setButtonThreeText();
-                break;
+    protected void onPause() {
+        super.onPause();
+
+        navigatorHolder.removeNavigator();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof BackButtonListener && ((BackButtonListener)fragment).backPressed()) {
+                return;
+            }
         }
-    }
 
-    @Override
-    public void setButtonOneText(String text) {
-        buttonCounterOne.setText(text);
-    }
-
-    @Override
-    public void setButtonTwoText(String text) {
-        buttonCounterTwo.setText(text);
-    }
-
-    @Override
-    public void setButtonThreeText(String text) {
-        buttonCounterThree.setText(text);
+        presenter.backClicked();
     }
 }
