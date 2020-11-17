@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment;
 
 import com.hw.githubclient.mvp.presenter.MainPresenter;
 import com.hw.githubclient.mvp.view.MainView;
+import com.hw.githubclient.rxtest.BackPressure;
+import com.hw.githubclient.rxtest.Creation;
 import com.hw.githubclient.rxtest.Operators;
+import com.hw.githubclient.rxtest.Sources;
 import com.hw.githubclient.ui.BackButtonListener;
 
 import moxy.MvpAppCompatActivity;
@@ -30,6 +33,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         //Creation.exec();
         //Operators.exec();
+        //Sources.exec();
+        //BackPressure.exec();
     }
 
 
