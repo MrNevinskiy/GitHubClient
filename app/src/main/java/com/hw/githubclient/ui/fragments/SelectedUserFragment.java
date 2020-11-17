@@ -26,7 +26,6 @@ public class SelectedUserFragment extends MvpAppCompatFragment implements Select
     private View view;
     private TextView userName;
     private GithubUser user = null;
-//    private String name;
 
     public static SelectedUserFragment getInstance(GithubUser user) {
         SelectedUserFragment fragment = new SelectedUserFragment();
@@ -38,22 +37,11 @@ public class SelectedUserFragment extends MvpAppCompatFragment implements Select
         return fragment;
     }
 
-//    public static SelectedUserFragment getInstance(String name) {
-//        SelectedUserFragment fragment = new SelectedUserFragment();
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putString("key", name);
-//
-//        fragment.setArguments(bundle);
-//        return fragment;
-//    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_selected_user, container, false);
         user = getArguments().getParcelable("key");
-//        name = getArguments().getString("key");
         return view;
     }
 
@@ -66,6 +54,5 @@ public class SelectedUserFragment extends MvpAppCompatFragment implements Select
     public void init() {
        userName = getView().findViewById(R.id.usre_name);
         userName.setText(user.getLogin());
-//       userName.setText(name);
     }
 }

@@ -11,8 +11,13 @@ import com.hw.githubclient.mvp.view.UsersView;
 import com.hw.githubclient.navigation.Screens;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import moxy.MvpPresenter;
 import ru.terrakok.cicerone.Router;
 
@@ -31,7 +36,6 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
         @Override
         public void onItemClick(UserItemView view) {
             GithubUser user = users.get(view.getPos());
-//            String name = user.getLogin();
             router.navigateTo(new Screens.SelectedUserScreen(user));
             if (VERBOSE) {
                 Log.v(TAG, " onItemClick " + view.getPos());
@@ -66,10 +70,26 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
     }
 
     private void loadData() {
-        List<GithubUser> users = usersRepo.getUsers();
-        usersListPresenter.users.addAll(users);
+        usersRepo.getUsers().subscribe(stringObserver);
         getViewState().updateList();
     }
+
+    final Observer<List> stringObserver = new Observer<List>() {
+
+        @Override
+        public void onSubscribe(@NonNull Disposable d) { }
+
+        @Override
+        public void onNext(@NonNull List arrayList) {
+            usersListPresenter.users.addAll(arrayList);
+        }
+
+        @Override
+        public void onError(@NonNull Throwable e) { }
+
+        @Override
+        public void onComplete() { }
+    };
 
     public boolean backPressed() {
         router.exit();

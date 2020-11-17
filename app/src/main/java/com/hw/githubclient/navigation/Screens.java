@@ -6,9 +6,6 @@ import com.hw.githubclient.mvp.model.entity.GithubUser;
 import com.hw.githubclient.ui.fragments.SelectedUserFragment;
 import com.hw.githubclient.ui.fragments.UsersFragment;
 
-import java.io.Serializable;
-import java.util.Arrays;
-
 import ru.terrakok.cicerone.android.support.SupportAppScreen;
 
 public class Screens {
@@ -26,15 +23,7 @@ public class Screens {
         public Fragment getFragment() {
             return SelectedUserFragment.getInstance(user);
         }
-//        String name;
-//        public SelectedUserScreen(Serializable name) {
-//           this.name = (String) name;
-//        }
-//
-//        @Override
-//        public Fragment getFragment() {
-//            return SelectedUserFragment.getInstance(name);
-//        }
+
     }
     public static class UsersScreen extends SupportAppScreen {
         @Override

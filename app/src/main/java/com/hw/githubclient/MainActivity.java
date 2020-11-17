@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import com.hw.githubclient.mvp.presenter.MainPresenter;
 import com.hw.githubclient.mvp.view.MainView;
+import com.hw.githubclient.rxtest.Operators;
 import com.hw.githubclient.ui.BackButtonListener;
 
 import moxy.MvpAppCompatActivity;
@@ -26,6 +27,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Creation.exec();
+        //Operators.exec();
     }
 
 
@@ -44,14 +48,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             if (fragment instanceof BackButtonListener && ((BackButtonListener)fragment).backPressed()) {
                 return;
             }
         }
-
         presenter.backClicked();
     }
 }

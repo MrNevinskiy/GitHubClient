@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public class GithubUserRepo {
     private List<GithubUser> repositories = new ArrayList<>(Arrays.asList(
             new GithubUser("login1"),
@@ -13,7 +15,7 @@ public class GithubUserRepo {
             new GithubUser("login4"),
             new GithubUser("login5")));
 
-    public List<GithubUser> getUsers() {
-        return Collections.unmodifiableList(repositories);
+    public Observable<List<GithubUser>> getUsers() {
+        return Observable.fromIterable(Arrays.asList(repositories));
     }
 }
