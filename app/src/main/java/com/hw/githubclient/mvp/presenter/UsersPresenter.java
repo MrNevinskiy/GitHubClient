@@ -2,22 +2,17 @@ package com.hw.githubclient.mvp.presenter;
 
 import android.util.Log;
 
-import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.mvp.model.entity.GithubUser;
-import com.hw.githubclient.mvp.model.entity.GithubUserRepo;
+import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
 import com.hw.githubclient.mvp.presenter.list.IUserListPresenter;
-import com.hw.githubclient.mvp.view.UserItemView;
+import com.hw.githubclient.mvp.view.list.UserItemView;
 import com.hw.githubclient.mvp.view.UsersView;
 import com.hw.githubclient.navigation.Screens;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.core.Scheduler;
 import moxy.MvpPresenter;
 import ru.terrakok.cicerone.Router;
 
@@ -26,8 +21,15 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
 
     private static final boolean VERBOSE = true;
 
-    private GithubUserRepo usersRepo = new GithubUserRepo();
-    private Router router = GithubApplication.getApplication().getRouter();
+    private Router router;
+    private final IGithubUsersRepo usersRepo;
+    private final Scheduler scheduler;
+
+    public UsersPresenter(Scheduler scheduler, IGithubUsersRepo usersRepo, Router router) {
+        this.scheduler = scheduler;
+        this.usersRepo = usersRepo;
+        this.router = router;
+    }
 
     private class UsersListPresenter implements IUserListPresenter {
 
@@ -36,7 +38,7 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
         @Override
         public void onItemClick(UserItemView view) {
             GithubUser user = users.get(view.getPos());
-            router.navigateTo(new Screens.SelectedUserScreen(user));
+            router.navigateTo(new Screens.UserScreen(user));
             if (VERBOSE) {
                 Log.v(TAG, " onItemClick " + view.getPos());
             }
@@ -46,6 +48,7 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
         public void bindView(UserItemView view) {
             GithubUser user = users.get(view.getPos());
             view.setLogin(user.getLogin());
+            view.loadAvatar(user.getAvatarUrl());
         }
 
         @Override
@@ -66,34 +69,21 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
 
         getViewState().init();
         loadData();
-
     }
 
     private void loadData() {
-        usersRepo.getUsers().subscribe(stringObserver);
-        getViewState().updateList();
+        usersRepo.getUsers().observeOn(scheduler).subscribe(repos -> {
+            usersListPresenter.users.clear();
+            usersListPresenter.users.addAll(repos);
+            getViewState().updateList();
+        }, (e) -> {
+            Log.w(TAG, "Error" + e.getMessage());
+        });
     }
 
-    final Observer<List> stringObserver = new Observer<List>() {
-
-        @Override
-        public void onSubscribe(@NonNull Disposable d) { }
-
-        @Override
-        public void onNext(@NonNull List arrayList) {
-            usersListPresenter.users.addAll(arrayList);
-        }
-
-        @Override
-        public void onError(@NonNull Throwable e) { }
-
-        @Override
-        public void onComplete() { }
-    };
 
     public boolean backPressed() {
         router.exit();
         return true;
-
     }
 }

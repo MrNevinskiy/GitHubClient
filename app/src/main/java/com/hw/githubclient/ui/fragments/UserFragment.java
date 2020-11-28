@@ -16,12 +16,9 @@ import com.hw.githubclient.mvp.model.entity.GithubUser;
 import com.hw.githubclient.mvp.model.repo.IGithubRepositoriesRepo;
 import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo;
 import com.hw.githubclient.mvp.presenter.UserPresenter;
-import com.hw.githubclient.mvp.presenter.UsersPresenter;
 import com.hw.githubclient.mvp.view.UserView;
-import com.hw.githubclient.mvp.view.UsersView;
 import com.hw.githubclient.ui.BackButtonListener;
 import com.hw.githubclient.ui.adapter.RepositoriesRVAdapter;
-import com.hw.githubclient.ui.adapter.UserRVAdapter;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import moxy.MvpAppCompatFragment;
@@ -29,7 +26,7 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 import ru.terrakok.cicerone.Router;
 
-public class UsersFragment extends MvpAppCompatFragment implements UserView, BackButtonListener {
+public class UserFragment extends MvpAppCompatFragment implements UserView, BackButtonListener {
     private static final String USER_ARG = "user";
 
     private RecyclerView mRecyclerView;
@@ -52,14 +49,13 @@ public class UsersFragment extends MvpAppCompatFragment implements UserView, Bac
         return new UserPresenter(user, AndroidSchedulers.mainThread(), githubRepositoriesRepo, router);
     }
 
+    public static UserFragment newInstance(GithubUser user) {
+        UserFragment fragment = new UserFragment();
 
-    public static UsersFragment getInstance(int data) {
-        UsersFragment fragment = new UsersFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(USER_ARG, user);
+        fragment.setArguments(args);
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("key", data);
-
-        fragment.setArguments(bundle);
         return fragment;
     }
 

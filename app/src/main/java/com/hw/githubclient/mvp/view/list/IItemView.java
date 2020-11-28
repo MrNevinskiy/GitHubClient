@@ -1,4 +1,4 @@
-package com.hw.githubclient.mvp.view;
+package com.hw.githubclient.mvp.view.list;
 
 public interface IItemView {
     int getPos();

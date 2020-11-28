@@ -1,18 +1,43 @@
 package com.hw.githubclient.mvp.model.entity;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 public class GithubUser implements Parcelable {
 
-    private String login;
+    @Expose private String id;
+    @Expose private String login;
+    @Expose private String avatarUrl;
+    @Expose private String reposUrl;
 
-    public GithubUser(String login){
+    public GithubUser(String id, String login, String avatar, String repoUrl) {
+        this.id = id;
         this.login = login;
+        this.avatarUrl = avatar;
+        this.reposUrl = repoUrl;
     }
 
     protected GithubUser(Parcel in) {
+        id = in.readString();
         login = in.readString();
+        avatarUrl = in.readString();
+        reposUrl = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(login);
+        dest.writeString(avatarUrl);
+        dest.writeString(reposUrl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<GithubUser> CREATOR = new Creator<GithubUser>() {
@@ -27,17 +52,19 @@ public class GithubUser implements Parcelable {
         }
     };
 
-    public String getLogin(){
+    public String getLogin() {
         return login;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getId() {
+        return id;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(login);
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public String getReposUrl() {
+        return reposUrl;
     }
 }
