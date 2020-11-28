@@ -2,9 +2,11 @@ package com.hw.githubclient.mvp.presenter;
 
 import android.util.Log;
 
+import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.mvp.model.entity.GithubRepository;
 import com.hw.githubclient.mvp.model.entity.GithubUser;
 import com.hw.githubclient.mvp.model.repo.IGithubRepositoriesRepo;
+import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo;
 import com.hw.githubclient.mvp.presenter.list.IRepositoryListPresenter;
 import com.hw.githubclient.mvp.view.UserView;
 import com.hw.githubclient.mvp.view.list.RepositoryItemView;
@@ -22,16 +24,18 @@ public class UserPresenter extends MvpPresenter<UserView> {
 
     private static final boolean VERBOSE = true;
 
-    private IGithubRepositoriesRepo githubRepositoriesRepo;
     private Router router;
+
+    private IGithubRepositoriesRepo githubRepositoriesRepo;
+
     private Scheduler scheduler;
     private final GithubUser user;
 
-    public UserPresenter(GithubUser user, Scheduler scheduler, IGithubRepositoriesRepo repo, Router router) {
+    public UserPresenter(GithubUser user, Scheduler scheduler,Router router) {
         this.user = user;
         this.scheduler = scheduler;
-        this.githubRepositoriesRepo = repo;
         this.router = router;
+        this.githubRepositoriesRepo = new RetrofitGithubRepositoriesRepo(GithubApplication.INSTANCE.getApi());
     }
 
 

@@ -2,13 +2,6 @@ package com.hw.githubclient.mvp.presenter;
 
 import android.util.Log;
 
-import com.hw.githubclient.mvp.model.entity.GithubUser;
-import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
-import com.hw.githubclient.mvp.presenter.list.IUserListPresenter;
-import com.hw.githubclient.mvp.view.list.UserItemView;
-import com.hw.githubclient.mvp.view.UsersView;
-import com.hw.githubclient.navigation.Screens;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +9,20 @@ import io.reactivex.rxjava3.core.Scheduler;
 import moxy.MvpPresenter;
 import ru.terrakok.cicerone.Router;
 
-public class UsersPresenter extends MvpPresenter<UsersView> {
+import com.hw.githubclient.mvp.model.entity.GithubUser;
+import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
+import com.hw.githubclient.mvp.presenter.list.IUserListPresenter;
+import com.hw.githubclient.mvp.view.UsersView;
+import com.hw.githubclient.mvp.view.list.UserItemView;
+import com.hw.githubclient.navigation.Screens;
+
+public class UsersPresenter extends MvpPresenter<UsersView>  {
     private static final String TAG = UsersPresenter.class.getSimpleName();
 
     private static final boolean VERBOSE = true;
 
     private Router router;
+
     private final IGithubUsersRepo usersRepo;
     private final Scheduler scheduler;
 
@@ -37,11 +38,12 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
 
         @Override
         public void onItemClick(UserItemView view) {
-            GithubUser user = users.get(view.getPos());
-            router.navigateTo(new Screens.UserScreen(user));
             if (VERBOSE) {
                 Log.v(TAG, " onItemClick " + view.getPos());
             }
+
+            GithubUser user = users.get(view.getPos());
+            router.navigateTo(new Screens.UserScreen(user));
         }
 
         @Override
@@ -69,6 +71,7 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
 
         getViewState().init();
         loadData();
+
     }
 
     private void loadData() {
@@ -81,9 +84,9 @@ public class UsersPresenter extends MvpPresenter<UsersView> {
         });
     }
 
-
     public boolean backPressed() {
         router.exit();
         return true;
+
     }
 }

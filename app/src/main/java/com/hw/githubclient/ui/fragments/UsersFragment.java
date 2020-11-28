@@ -10,48 +10,39 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hw.githubclient.GithubApplication;
-import com.hw.githubclient.R;
-import com.hw.githubclient.mvp.model.entity.GithubUser;
-import com.hw.githubclient.mvp.model.repo.IGithubRepositoriesRepo;
-import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo;
-import com.hw.githubclient.mvp.presenter.UserPresenter;
-import com.hw.githubclient.mvp.presenter.UsersPresenter;
-import com.hw.githubclient.mvp.view.UserView;
-import com.hw.githubclient.mvp.view.UsersView;
-import com.hw.githubclient.ui.BackButtonListener;
-import com.hw.githubclient.ui.adapter.RepositoriesRVAdapter;
-import com.hw.githubclient.ui.adapter.UserRVAdapter;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 import ru.terrakok.cicerone.Router;
 
-public class UsersFragment extends MvpAppCompatFragment implements UserView, BackButtonListener {
-    private static final String USER_ARG = "user";
+import com.hw.githubclient.GithubApplication;
+import com.hw.githubclient.R;
+import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
+import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubUsersRepo;
+import com.hw.githubclient.mvp.presenter.UsersPresenter;
+import com.hw.githubclient.mvp.view.UsersView;
+import com.hw.githubclient.ui.BackButtonListener;
+import com.hw.githubclient.ui.adapter.UserRVAdapter;
 
-    private RecyclerView mRecyclerView;
-    private RepositoriesRVAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+public class UsersFragment extends MvpAppCompatFragment implements UsersView, BackButtonListener {
 
-    private View mView;
+    private RecyclerView recyclerView;
+    private UserRVAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private View view;
 
     @InjectPresenter
-    UserPresenter mPresenter;
+    UsersPresenter usersPresenter;
 
     @ProvidePresenter
-    UserPresenter provideUserPresenter() {
-        final GithubUser user = getArguments().getParcelable(USER_ARG);
-
-        IGithubRepositoriesRepo githubRepositoriesRepo = new RetrofitGithubRepositoriesRepo(GithubApplication.INSTANCE.getApi());
-
+    UsersPresenter provideUsersPresenter() {
+        IGithubUsersRepo usersRepo = new RetrofitGithubUsersRepo(GithubApplication.INSTANCE.getApi());
         Router router = GithubApplication.getApplication().getRouter();
 
-        return new UserPresenter(user, AndroidSchedulers.mainThread(), githubRepositoriesRepo, router);
+        return new UsersPresenter(AndroidSchedulers.mainThread(), usersRepo, router);
     }
-
 
     public static UsersFragment getInstance(int data) {
         UsersFragment fragment = new UsersFragment();
@@ -71,29 +62,28 @@ public class UsersFragment extends MvpAppCompatFragment implements UserView, Bac
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_user, container, false);
+        view = inflater.inflate(R.layout.fragment_users, container, false);
 
-        mRecyclerView = (RecyclerView)mView.findViewById(R.id.rv_repositories);
+        recyclerView = (RecyclerView)view.findViewById(R.id.rv_users);
 
-        return mView;
+        return view;
     }
 
     @Override
     public void init() {
-        mLayoutManager = new LinearLayoutManager(mView.getContext());
-
-        mAdapter = new RepositoriesRVAdapter(mPresenter.getPresenter());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        layoutManager = new LinearLayoutManager(view.getContext());
+        adapter = new UserRVAdapter(usersPresenter.getUsersListPresenter());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void updateList() {
-        mAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public boolean backPressed() {
-        return mPresenter.backPressed();
+        return usersPresenter.backPressed();
     }
 }

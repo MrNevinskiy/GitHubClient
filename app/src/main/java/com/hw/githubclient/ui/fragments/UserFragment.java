@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.R;
 import com.hw.githubclient.mvp.model.entity.GithubUser;
-import com.hw.githubclient.mvp.model.repo.IGithubRepositoriesRepo;
-import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo;
 import com.hw.githubclient.mvp.presenter.UserPresenter;
 import com.hw.githubclient.mvp.view.UserView;
 import com.hw.githubclient.ui.BackButtonListener;
@@ -29,24 +27,20 @@ import ru.terrakok.cicerone.Router;
 public class UserFragment extends MvpAppCompatFragment implements UserView, BackButtonListener {
     private static final String USER_ARG = "user";
 
-    private RecyclerView mRecyclerView;
-    private RepositoriesRVAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView recyclerView;
+    private RepositoriesRVAdapter rvAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
-    private View mView;
+    private View view;
 
     @InjectPresenter
-    UserPresenter mPresenter;
+    UserPresenter presenter;
 
     @ProvidePresenter
     UserPresenter provideUserPresenter() {
         final GithubUser user = getArguments().getParcelable(USER_ARG);
-
-        IGithubRepositoriesRepo githubRepositoriesRepo = new RetrofitGithubRepositoriesRepo(GithubApplication.INSTANCE.getApi());
-
         Router router = GithubApplication.getApplication().getRouter();
-
-        return new UserPresenter(user, AndroidSchedulers.mainThread(), githubRepositoriesRepo, router);
+        return new UserPresenter(user, AndroidSchedulers.mainThread(), router);
     }
 
     public static UserFragment newInstance(GithubUser user) {
@@ -67,29 +61,29 @@ public class UserFragment extends MvpAppCompatFragment implements UserView, Back
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_user, container, false);
+        view = inflater.inflate(R.layout.fragment_user, container, false);
 
-        mRecyclerView = (RecyclerView)mView.findViewById(R.id.rv_repositories);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rv_repositories);
 
-        return mView;
+        return view;
     }
 
     @Override
     public void init() {
-        mLayoutManager = new LinearLayoutManager(mView.getContext());
+        layoutManager = new LinearLayoutManager(view.getContext());
 
-        mAdapter = new RepositoriesRVAdapter(mPresenter.getPresenter());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        rvAdapter = new RepositoriesRVAdapter(presenter.getPresenter());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(rvAdapter);
     }
 
     @Override
     public void updateList() {
-        mAdapter.notifyDataSetChanged();
+        rvAdapter.notifyDataSetChanged();
     }
 
     @Override
     public boolean backPressed() {
-        return mPresenter.backPressed();
+        return presenter.backPressed();
     }
 }
