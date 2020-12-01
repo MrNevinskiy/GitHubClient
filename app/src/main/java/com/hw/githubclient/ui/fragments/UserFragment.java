@@ -12,11 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.R;
+import com.hw.githubclient.mvp.model.cache.room.RoomGithubRepositoriesCache;
 import com.hw.githubclient.mvp.model.entity.GithubUser;
+import com.hw.githubclient.mvp.model.entity.room.Database;
+import com.hw.githubclient.mvp.model.repo.IGithubRepositoriesRepo;
+import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubRepositoriesRepo;
 import com.hw.githubclient.mvp.presenter.UserPresenter;
 import com.hw.githubclient.mvp.view.UserView;
 import com.hw.githubclient.ui.BackButtonListener;
 import com.hw.githubclient.ui.adapter.RepositoriesRVAdapter;
+import com.hw.githubclient.ui.network.AndroidNetworkStatus;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import moxy.MvpAppCompatFragment;
@@ -39,8 +44,14 @@ public class UserFragment extends MvpAppCompatFragment implements UserView, Back
     @ProvidePresenter
     UserPresenter provideUserPresenter() {
         final GithubUser user = getArguments().getParcelable(USER_ARG);
+
+        IGithubRepositoriesRepo githubRepositoriesRepo = new RetrofitGithubRepositoriesRepo(GithubApplication.INSTANCE.getApi(),
+                new AndroidNetworkStatus(),
+                new RoomGithubRepositoriesCache(Database.getInstance()));
+
         Router router = GithubApplication.getApplication().getRouter();
-        return new UserPresenter(user, AndroidSchedulers.mainThread(), router);
+
+        return new UserPresenter(user, AndroidSchedulers.mainThread(), githubRepositoriesRepo, router);
     }
 
     public static UserFragment newInstance(GithubUser user) {

@@ -31,11 +31,11 @@ public class UserPresenter extends MvpPresenter<UserView> {
     private Scheduler scheduler;
     private final GithubUser user;
 
-    public UserPresenter(GithubUser user, Scheduler scheduler,Router router) {
+    public UserPresenter(GithubUser user, Scheduler scheduler, IGithubRepositoriesRepo repo, Router router) {
         this.user = user;
         this.scheduler = scheduler;
+        this.githubRepositoriesRepo = repo;
         this.router = router;
-        this.githubRepositoriesRepo = new RetrofitGithubRepositoriesRepo(GithubApplication.INSTANCE.getApi());
     }
 
 

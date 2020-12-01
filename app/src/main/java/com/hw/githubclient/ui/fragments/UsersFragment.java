@@ -18,12 +18,15 @@ import ru.terrakok.cicerone.Router;
 
 import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.R;
+import com.hw.githubclient.mvp.model.cache.room.RoomGithubUsersCache;
+import com.hw.githubclient.mvp.model.entity.room.Database;
 import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
 import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubUsersRepo;
 import com.hw.githubclient.mvp.presenter.UsersPresenter;
 import com.hw.githubclient.mvp.view.UsersView;
 import com.hw.githubclient.ui.BackButtonListener;
 import com.hw.githubclient.ui.adapter.UserRVAdapter;
+import com.hw.githubclient.ui.network.AndroidNetworkStatus;
 
 public class UsersFragment extends MvpAppCompatFragment implements UsersView, BackButtonListener {
 
@@ -38,7 +41,9 @@ public class UsersFragment extends MvpAppCompatFragment implements UsersView, Ba
 
     @ProvidePresenter
     UsersPresenter provideUsersPresenter() {
-        IGithubUsersRepo usersRepo = new RetrofitGithubUsersRepo(GithubApplication.INSTANCE.getApi());
+        IGithubUsersRepo usersRepo = new RetrofitGithubUsersRepo(GithubApplication.INSTANCE.getApi(),
+                new AndroidNetworkStatus(),
+                new RoomGithubUsersCache(Database.getInstance()));
         Router router = GithubApplication.getApplication().getRouter();
 
         return new UsersPresenter(AndroidSchedulers.mainThread(), usersRepo, router);
