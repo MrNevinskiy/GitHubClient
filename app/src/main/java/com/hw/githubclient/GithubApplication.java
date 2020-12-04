@@ -2,11 +2,11 @@ package com.hw.githubclient;
 
 import android.app.Application;
 
+import com.hw.githubclient.di.AppComponent;
+import com.hw.githubclient.di.DaggerAppComponent;
 import com.hw.githubclient.mvp.model.api.IDataSource;
+import com.hw.githubclient.di.module.AppModule;
 
-import ru.terrakok.cicerone.Cicerone;
-import ru.terrakok.cicerone.NavigatorHolder;
-import ru.terrakok.cicerone.Router;
 
 public class GithubApplication extends Application {
 
@@ -14,8 +14,9 @@ public class GithubApplication extends Application {
 
     public static GithubApplication INSTANCE;
 
-    private Cicerone<Router> cicerone;
     private ApiHolder apiHolder;
+
+    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
@@ -23,27 +24,20 @@ public class GithubApplication extends Application {
 
         INSTANCE = this;
 
-        initCicerone();
         apiHolder = new ApiHolder();
+
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     }
 
     public static GithubApplication getApplication() {
         return INSTANCE;
     }
 
-    private void initCicerone() {
-        cicerone = Cicerone.create();
-    }
-
-    public Router getRouter() {
-        return cicerone.getRouter();
-    }
-
-    public NavigatorHolder getNavigatorHolder() {
-        return cicerone.getNavigatorHolder();
-    }
-
     public IDataSource getApi() {
         return apiHolder.getDataSource();
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
 }

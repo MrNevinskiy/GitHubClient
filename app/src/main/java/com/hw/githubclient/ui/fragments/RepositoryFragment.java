@@ -9,15 +9,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.R;
 import com.hw.githubclient.mvp.model.entity.GithubRepository;
 import com.hw.githubclient.mvp.presenter.RepositoryPresenter;
 import com.hw.githubclient.mvp.view.RepositoryView;
 import com.hw.githubclient.ui.BackButtonListener;
 
+import javax.inject.Inject;
+
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
+import ru.terrakok.cicerone.Router;
 
 public class RepositoryFragment extends MvpAppCompatFragment implements RepositoryView, BackButtonListener {
 

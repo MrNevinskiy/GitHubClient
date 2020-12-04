@@ -15,6 +15,8 @@ import com.hw.githubclient.navigation.Screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.rxjava3.core.Scheduler;
 import moxy.MvpPresenter;
 import ru.terrakok.cicerone.Router;
@@ -24,18 +26,18 @@ public class UserPresenter extends MvpPresenter<UserView> {
 
     private static final boolean VERBOSE = true;
 
-    private Router router;
+    @Inject
+    IGithubRepositoriesRepo githubRepositoriesRepo;
+    @Inject
+    Router router;
+    @Inject
+    Scheduler scheduler;
 
-    private IGithubRepositoriesRepo githubRepositoriesRepo;
-
-    private Scheduler scheduler;
     private final GithubUser user;
 
-    public UserPresenter(GithubUser user, Scheduler scheduler, IGithubRepositoriesRepo repo, Router router) {
+    public UserPresenter(GithubUser user) {
         this.user = user;
-        this.scheduler = scheduler;
-        this.githubRepositoriesRepo = repo;
-        this.router = router;
+        GithubApplication.INSTANCE.getAppComponent().inject(this);
     }
 
 

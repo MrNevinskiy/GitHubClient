@@ -39,16 +39,6 @@ public class UsersFragment extends MvpAppCompatFragment implements UsersView, Ba
     @InjectPresenter
     UsersPresenter usersPresenter;
 
-    @ProvidePresenter
-    UsersPresenter provideUsersPresenter() {
-        IGithubUsersRepo usersRepo = new RetrofitGithubUsersRepo(GithubApplication.INSTANCE.getApi(),
-                new AndroidNetworkStatus(),
-                new RoomGithubUsersCache(Database.getInstance()));
-        Router router = GithubApplication.getApplication().getRouter();
-
-        return new UsersPresenter(AndroidSchedulers.mainThread(), usersRepo, router);
-    }
-
     public static UsersFragment getInstance(int data) {
         UsersFragment fragment = new UsersFragment();
 

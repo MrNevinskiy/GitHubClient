@@ -9,6 +9,7 @@ import io.reactivex.rxjava3.core.Scheduler;
 import moxy.MvpPresenter;
 import ru.terrakok.cicerone.Router;
 
+import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.mvp.model.entity.GithubUser;
 import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
 import com.hw.githubclient.mvp.presenter.list.IUserListPresenter;
@@ -16,20 +17,22 @@ import com.hw.githubclient.mvp.view.UsersView;
 import com.hw.githubclient.mvp.view.list.UserItemView;
 import com.hw.githubclient.navigation.Screens;
 
+import javax.inject.Inject;
+
 public class UsersPresenter extends MvpPresenter<UsersView>  {
     private static final String TAG = UsersPresenter.class.getSimpleName();
 
     private static final boolean VERBOSE = true;
 
-    private Router router;
+    @Inject
+    Router router;
+    @Inject
+    IGithubUsersRepo usersRepo;
+    @Inject
+    Scheduler scheduler;
 
-    private final IGithubUsersRepo usersRepo;
-    private final Scheduler scheduler;
-
-    public UsersPresenter(Scheduler scheduler, IGithubUsersRepo usersRepo, Router router) {
-        this.scheduler = scheduler;
-        this.usersRepo = usersRepo;
-        this.router = router;
+    public UsersPresenter() {
+        GithubApplication.INSTANCE.getAppComponent().inject(this);
     }
 
     private class UsersListPresenter implements IUserListPresenter {

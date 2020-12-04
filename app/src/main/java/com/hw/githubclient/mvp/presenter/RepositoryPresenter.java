@@ -5,6 +5,8 @@ import com.hw.githubclient.mvp.model.entity.GithubRepository;
 import com.hw.githubclient.mvp.model.entity.GithubUserRepo;
 import com.hw.githubclient.mvp.view.RepositoryView;
 
+import javax.inject.Inject;
+
 import moxy.MvpPresenter;
 import ru.terrakok.cicerone.Router;
 
@@ -12,10 +14,12 @@ public class RepositoryPresenter extends MvpPresenter<RepositoryView> {
 
     private final GithubRepository githubRepository;
 
-    private Router router = GithubApplication.getApplication().getRouter();
+    @Inject
+    Router router;
 
     public RepositoryPresenter(GithubRepository githubRepository) {
         this.githubRepository = githubRepository;
+        GithubApplication.INSTANCE.getAppComponent().inject(this);
     }
 
     @Override
