@@ -16,24 +16,10 @@ import dagger.Provides;
 
 @Module
 public class CacheModule {
-
     @Singleton
     @Provides
     Database database() {
         return Room.databaseBuilder(GithubApplication.INSTANCE, Database.class, Database.DB_NAME)
                 .build();
     }
-
-    @Singleton
-    @Provides
-    IGithubUsersCache usersCache(Database db) {
-        return new RoomGithubUsersCache(db);
-    }
-
-    @Singleton
-    @Provides
-    IGithubRepositoriesCache userRepositoriesCache(Database db) {
-        return new RoomGithubRepositoriesCache(db);
-    }
-
 }

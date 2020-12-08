@@ -10,23 +10,15 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import moxy.MvpAppCompatFragment;
-import moxy.presenter.InjectPresenter;
-import moxy.presenter.ProvidePresenter;
-import ru.terrakok.cicerone.Router;
-
 import com.hw.githubclient.GithubApplication;
 import com.hw.githubclient.R;
-import com.hw.githubclient.mvp.model.cache.room.RoomGithubUsersCache;
-import com.hw.githubclient.mvp.model.entity.room.Database;
-import com.hw.githubclient.mvp.model.repo.IGithubUsersRepo;
-import com.hw.githubclient.mvp.model.repo.retrofit.RetrofitGithubUsersRepo;
 import com.hw.githubclient.mvp.presenter.UsersPresenter;
 import com.hw.githubclient.mvp.view.UsersView;
 import com.hw.githubclient.ui.BackButtonListener;
 import com.hw.githubclient.ui.adapter.UserRVAdapter;
-import com.hw.githubclient.ui.network.AndroidNetworkStatus;
+
+import moxy.MvpAppCompatFragment;
+import moxy.presenter.InjectPresenter;
 
 public class UsersFragment extends MvpAppCompatFragment implements UsersView, BackButtonListener {
 
@@ -76,6 +68,12 @@ public class UsersFragment extends MvpAppCompatFragment implements UsersView, Ba
     public void updateList() {
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void release() {
+        GithubApplication.INSTANCE.releaseUserSubcomponent();
+    }
+
 
     @Override
     public boolean backPressed() {

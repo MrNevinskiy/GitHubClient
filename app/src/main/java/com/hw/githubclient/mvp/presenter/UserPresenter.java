@@ -37,7 +37,7 @@ public class UserPresenter extends MvpPresenter<UserView> {
 
     public UserPresenter(GithubUser user) {
         this.user = user;
-        GithubApplication.INSTANCE.getAppComponent().inject(this);
+        GithubApplication.INSTANCE.initRepositoriesSubcomponent().inject(this);
     }
 
 
@@ -99,5 +99,7 @@ public class UserPresenter extends MvpPresenter<UserView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        getViewState().release();
     }
 }

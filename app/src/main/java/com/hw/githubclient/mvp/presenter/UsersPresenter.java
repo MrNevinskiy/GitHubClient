@@ -32,7 +32,7 @@ public class UsersPresenter extends MvpPresenter<UsersView>  {
     Scheduler scheduler;
 
     public UsersPresenter() {
-        GithubApplication.INSTANCE.getAppComponent().inject(this);
+        GithubApplication.INSTANCE.initUserSubcomponent().inject(this);
     }
 
     private class UsersListPresenter implements IUserListPresenter {
@@ -91,5 +91,12 @@ public class UsersPresenter extends MvpPresenter<UsersView>  {
         router.exit();
         return true;
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        getViewState().release();
     }
 }
